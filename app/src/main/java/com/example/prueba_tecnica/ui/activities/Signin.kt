@@ -18,9 +18,7 @@ import com.example.prueba_tecnica.ui.viewmodel.SigninViewModel
 //viewModel: SigninViewModel, navigateToHome: () -> Unit
 @Composable
 fun SigninScreen() {
-    Prueba_tecnicaTheme {
-        Signin()
-    }
+    Home { Signin() }
 }
 
 @Preview

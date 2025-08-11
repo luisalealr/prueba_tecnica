@@ -1,16 +1,18 @@
 package com.example.prueba_tecnica
 
+import android.os.Build
 import android.os.Bundle
+import android.view.Window
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.navigation.NavHostController
+import androidx.annotation.RequiresApi
 import androidx.navigation.compose.rememberNavController
-import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 
 class DetailActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.R)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContent {
             val navController = rememberNavController()
             NavigationWrapper(navController)
