@@ -31,6 +31,7 @@ import com.example.prueba_tecnica.data.model.ResponseAPI
 import com.example.prueba_tecnica.ui.formats.formatFecha
 import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReportCard(report: ResponseAPI) {
     Prueba_tecnicaTheme(dynamicColor = false) {
