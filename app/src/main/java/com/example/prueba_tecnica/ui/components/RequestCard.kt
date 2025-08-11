@@ -1,8 +1,11 @@
 package com.example.prueba_tecnica.ui.components
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,41 +26,57 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.example.prueba_tecnica.data.model.ResponseAPI
+import com.example.prueba_tecnica.ui.formats.formatFecha
 import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 
-@Preview
 @Composable
-fun DemandCard() {
+fun ReportCard(report: ResponseAPI) {
     Prueba_tecnicaTheme(dynamicColor = false) {
-        Card(
+        Box(
             modifier = Modifier
-                .fillMaxWidth()
-                .height(500.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .padding(20.dp),
-            colors = CardDefaults.cardColors(
-                containerColor = Color.White
-            ),
-            elevation = CardDefaults.cardElevation(
-                defaultElevation = 0.dp
-            )
+                .fillMaxSize()
+                .background(Color.White)
         ) {
-            Column(
+            Card(
                 modifier = Modifier
-                    .fillMaxSize()
+                    .fillMaxWidth()
+                    .height(480.dp)
+                    .clip(RoundedCornerShape(12.dp))
                     .padding(20.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                colors = CardDefaults.cardColors(
+                    containerColor = Color.White
+                ),
+                elevation = CardDefaults.cardElevation(
+                    defaultElevation = 12.dp
+                )
             ) {
-                Column {
-                    IdInfo()
-                    Spacer(modifier = Modifier.size(10.dp))
-                    TitleInfo()
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(20.dp),
+                    verticalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Column {
+                        IdInfo(report.id, report.type)
+                        Spacer(modifier = Modifier.size(10.dp))
+                        TitleInfo(
+                            report.name,
+                            report.createTime,
+                            report.priority.name,
+                            report.status.description
+                        )
+                    }
+                    AreaInfo(report.area.name, report.department.name, report.store.id)
+                    PeopleInfo(
+                        report.createdByUser.firstName,
+                        report.createdByUser.lastName,
+                        report.attendingByUser?.firstName,
+                        report.attendingByUser?.lastName
+                    )
+                    DetailButton()
                 }
-                AreaInfo()
-                PeopleInfo()
-                DetailButton()
             }
         }
     }
@@ -80,10 +99,10 @@ fun DetailButton() {
 }
 
 @Composable
-fun Categories() {
+fun Categories(priority: String?, status: String?) {
     Row {
         Text(
-            text = "Alta",
+            text = priority ?: "No tiene prioridad asignada",
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
@@ -93,7 +112,7 @@ fun Categories() {
         )
         Spacer(modifier = Modifier.size(5.dp))
         Text(
-            text = "En espera de solución",
+            text = status ?: "",
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .border(
@@ -108,19 +127,19 @@ fun Categories() {
 }
 
 @Composable
-fun IdInfo() {
+fun IdInfo(id: Int, type: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
-            text = "# 123456789",
+            text = "# $id",
             style = MaterialTheme.typography.titleSmall,
             color = Color.Gray
         )
         Text(
-            text = "Correctivo",
+            text = type,
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
@@ -132,7 +151,7 @@ fun IdInfo() {
 }
 
 @Composable
-fun AreaInfo() {
+fun AreaInfo(area: String, department: String, unity: Int) {
     Column(
         modifier = Modifier.height(70.dp),
         verticalArrangement = Arrangement.SpaceBetween
@@ -144,7 +163,7 @@ fun AreaInfo() {
                 color = Color.Gray
             )
             Text(
-                text = "Finanzas",
+                text = area,
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
@@ -156,9 +175,11 @@ fun AreaInfo() {
                 color = Color.Gray
             )
             Text(
-                text = "Contabilidad",
+                text = department,
                 style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
+                color = Color.Gray,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
         Row {
@@ -168,7 +189,7 @@ fun AreaInfo() {
                 color = Color.Gray
             )
             Text(
-                text = "Sample 123",
+                text = "$unity",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
@@ -177,7 +198,12 @@ fun AreaInfo() {
 }
 
 @Composable
-fun PeopleInfo() {
+fun PeopleInfo(
+    creatorFirstName: String,
+    creatorLastName: String,
+    solverFirstName: String?,
+    solverLastName: String?
+) {
     Column(
         modifier = Modifier.height(70.dp),
         verticalArrangement = Arrangement.SpaceBetween
@@ -189,7 +215,7 @@ fun PeopleInfo() {
                 color = Color.Gray
             )
             Text(
-                text = "Juan Francisco Jimenez",
+                text = "$creatorFirstName $creatorLastName",
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray,
                 maxLines = 1,
@@ -215,7 +241,11 @@ fun PeopleInfo() {
                 color = Color.Gray
             )
             Text(
-                text = "Juan Ramirez",
+                text = if (solverFirstName.isNullOrBlank() && solverLastName.isNullOrBlank()) {
+                    "No Asignado"
+                } else {
+                    "${solverFirstName ?: ""} ${solverLastName ?: ""}".trim()
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray,
                 maxLines = 1,
@@ -225,26 +255,29 @@ fun PeopleInfo() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun TitleInfo() {
+fun TitleInfo(name: String, createdAt: String, priority: String, status: String) {
+
+    val date = formatFecha(createdAt)
     Text(
-        text = "Mantenimiento de A/A de oficina principal",
+        text = name,
         style = MaterialTheme.typography.labelMedium,
         color = MaterialTheme.colorScheme.surface,
         maxLines = 3,
         overflow = TextOverflow.Ellipsis,
     )
     Spacer(modifier = Modifier.size(5.dp))
-    Categories()
+    Categories(priority, status)
     Spacer(modifier = Modifier.size(10.dp))
     Row {
         Text(
-            text = "Solicitado el:",
+            text = "Solicitado el: ",
             style = MaterialTheme.typography.bodyMedium,
             color = Color.Gray
         )
         Text(
-            text = "DD/MM/YYYY HH:MM",
+            text = date,
             style = MaterialTheme.typography.bodySmall,
             color = Color.Gray,
             maxLines = 1,

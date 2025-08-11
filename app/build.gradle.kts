@@ -60,6 +60,7 @@ dependencies {
 
     //live-data
     implementation(libs.androidx.lifecycle.livedata.ktx)
+    implementation(libs.androidx.runtime.livedata.v154)
 
     //retrofit
     implementation(libs.retrofit)
@@ -69,6 +70,9 @@ dependencies {
 
     //corrutinas
     implementation(libs.kotlin.coroutines.android)
+
+    // persistencia
+    implementation(libs.androidx.datastore.preferences)
 
     //splashscreen
     implementation(libs.androidx.core.splashscreen)

@@ -31,7 +31,7 @@ import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 
 @Preview
 @Composable
-fun FilterDemand() {
+fun FilterRequest() {
     Prueba_tecnicaTheme(dynamicColor = false) {
         Box(modifier = Modifier.fillMaxWidth().background(Color.White)) {
             Surface(

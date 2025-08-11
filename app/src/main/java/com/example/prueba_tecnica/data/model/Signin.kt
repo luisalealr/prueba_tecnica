@@ -1,7 +1,8 @@
 package com.example.prueba_tecnica.data.model
 
 data class SigninRequest (
-    val token: String
+    val username: String,
+    val password: String
 )
 
 data class AuthResponse(

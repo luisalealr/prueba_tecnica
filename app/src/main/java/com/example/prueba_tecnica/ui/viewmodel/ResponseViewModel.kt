@@ -9,19 +9,19 @@ import kotlinx.coroutines.launch
 
 class ResponseViewModel(private val api: WebService): ViewModel() {
 
-    val listDemands = mutableStateOf<List<ResponseAPI>>(emptyList())
+    val requestList = mutableStateOf<List<ResponseAPI>>(emptyList())
 
     val errorMessage = mutableStateOf("")
 
-    fun loadDemands(token: String) {
+    fun loadRequest(token: String) {
         viewModelScope.launch {
             try {
-                val response = api.getDemand("Bearer $token")
+                val response = api.getRequest("Bearer $token")
                 if (response.isSuccessful) {
-                    listDemands.value = response.body() ?: emptyList()
+                    requestList.value = response.body() ?: emptyList()
                     errorMessage.value = ""
                 } else {
-                    errorMessage.value = "Error al cargar las materias: ${response.code()}"
+                    errorMessage.value = "Error al cargar las peticiones: ${response.code()}"
                 }
             } catch (e: Exception) {
                 errorMessage.value = "Error de red: ${e.message}"
