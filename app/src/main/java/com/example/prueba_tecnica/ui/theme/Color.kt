@@ -3,7 +3,7 @@ package com.example.prueba_tecnica.ui.theme
 import androidx.compose.ui.graphics.Color
 
 //light mode
-val Purple = Color(0xFF4401c1)
+val Purple = Color(0xFF4A07C5)
 val Lavanda = Color(0xFF952bf2)
 val Pink = Color(0xFFec6767)
 val Blue = Color(0xFF3b87d9)

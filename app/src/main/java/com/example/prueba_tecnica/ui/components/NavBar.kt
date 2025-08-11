@@ -16,7 +16,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
-import androidx.compose.material.Surface
+import androidx.compose.material3.Surface
 import androidx.compose.material.Text
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.BugReport
@@ -73,7 +73,8 @@ fun NavBar() {
                     .fillMaxWidth()
                     .height(72.dp),
                 color = Color.White,
-                shape = ShapeNavBar(offset, circleRadius, circleGap)
+                shadowElevation = 10.dp,
+                shape = ShapeNavBar(offset, circleRadius, circleGap),
             ) {
                 Row(
                     modifier = Modifier.fillMaxSize(),

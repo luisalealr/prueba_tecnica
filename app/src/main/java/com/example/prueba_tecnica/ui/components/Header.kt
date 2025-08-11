@@ -46,6 +46,7 @@ fun TopBar() {
             Column {
                 Header()
                 GoToStore()
+                FilterDemand()
             }
         }
 
@@ -58,7 +59,7 @@ fun Header() {
     Box(
         modifier = Modifier
             .background(MaterialTheme.colorScheme.surface)
-            .height(40.dp)
+            .height(50.dp)
     ) {
         Row(
             modifier = Modifier
@@ -103,7 +104,7 @@ fun GoToStore() {
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MaterialTheme.colorScheme.primary)
-                .height(36.dp)
+                .height(45.dp)
                 .padding(horizontal = 8.dp)
         ) {
             Row(
