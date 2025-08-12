@@ -13,15 +13,33 @@ class ResponseViewModel(private val api: WebService): ViewModel() {
 
     val errorMessage = mutableStateOf("")
 
-    fun loadRequest(token: String) {
+    val selectedReport = mutableStateOf<ResponseAPI?>(null)
+
+    fun loadReports(token: String) {
         viewModelScope.launch {
             try {
-                val response = api.getRequest("Bearer $token")
+                val response = api.getReport("Bearer $token")
                 if (response.isSuccessful) {
                     requestList.value = response.body() ?: emptyList()
                     errorMessage.value = ""
                 } else {
                     errorMessage.value = "Error al cargar las peticiones: ${response.code()}"
+                }
+            } catch (e: Exception) {
+                errorMessage.value = "Error de red: ${e.message}"
+            }
+        }
+    }
+
+    fun getReport(id: Int, token: String){
+        viewModelScope.launch {
+            try {
+                val response = api.getReportById(id, "Bearer $token")
+                if (response.isSuccessful) {
+                    selectedReport.value = response.body()
+                    errorMessage.value = ""
+                } else {
+                    errorMessage.value = "Error al cargar la petición: ${response.code()}"
                 }
             } catch (e: Exception) {
                 errorMessage.value = "Error de red: ${e.message}"

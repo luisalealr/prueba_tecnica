@@ -33,7 +33,7 @@ import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun ReportCard(report: ResponseAPI) {
+fun ReportCard(report: ResponseAPI, onClick: () -> Unit) {
     Prueba_tecnicaTheme(dynamicColor = false) {
         Box(
             modifier = Modifier
@@ -76,7 +76,7 @@ fun ReportCard(report: ResponseAPI) {
                         report.attendingByUser?.firstName,
                         report.attendingByUser?.lastName
                     )
-                    DetailButton()
+                    DetailButton(onClick)
                 }
             }
         }
@@ -84,9 +84,9 @@ fun ReportCard(report: ResponseAPI) {
 }
 
 @Composable
-fun DetailButton() {
+fun DetailButton(onClick: () -> Unit) {
     Button(
-        onClick = {}, modifier = Modifier
+        onClick = {onClick()}, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
         shape = RoundedCornerShape(12.dp)

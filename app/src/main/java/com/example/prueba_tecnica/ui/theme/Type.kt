@@ -18,8 +18,8 @@ val Typography = Typography(
     //Titulos Grandes
     titleLarge = TextStyle(
         fontFamily = FontFamily.Default,
-        fontWeight = FontWeight.Normal,
-        fontSize = 20.sp,
+        fontWeight = FontWeight.Bold,
+        fontSize = 18.sp,
         lineHeight = 28.sp,
         letterSpacing = 0.sp
     ),
@@ -59,7 +59,7 @@ val Typography = Typography(
     bodySmall = TextStyle(
         fontFamily = FontFamily.Default,
         fontWeight = FontWeight.Normal,
-        fontSize = 17.sp,
+        fontSize = 15.sp,
         lineHeight = 16.sp,
         letterSpacing = 0.5.sp
     ),

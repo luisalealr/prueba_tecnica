@@ -1,5 +1,7 @@
 package com.example.prueba_tecnica.ui.activities
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,6 +19,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import com.example.prueba_tecnica.data.helper.TokenManager
 import com.example.prueba_tecnica.data.network.RetrofitClient
 import com.example.prueba_tecnica.ui.components.ReportCard
@@ -24,11 +27,13 @@ import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 import com.example.prueba_tecnica.ui.viewmodel.ResponseViewModel
 import com.example.prueba_tecnica.ui.viewmodel.ResponseViewModelFactory
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun RequestList() {
+fun ReportList(navController: NavController) {
     val apiService = RetrofitClient.webService
     val factory = ResponseViewModelFactory(apiService)
     val responseViewModel: ResponseViewModel = viewModel(factory = factory)
+
     Prueba_tecnicaTheme {
         Box(
             Modifier
@@ -36,14 +41,15 @@ fun RequestList() {
                 .background(MaterialTheme.colorScheme.primaryContainer)
         ) {
             Home {
-                List(responseViewModel)
+                List(responseViewModel, navController)
             }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun List(responseViewModel: ResponseViewModel) {
+fun List(responseViewModel: ResponseViewModel, navController: NavController) {
     val context = LocalContext.current
     val reportList by responseViewModel.requestList
     var token by remember { mutableStateOf<String?>(null) }
@@ -51,7 +57,7 @@ fun List(responseViewModel: ResponseViewModel) {
     LaunchedEffect(true) {
         token = TokenManager.getToken(context)
         token?.let {
-            responseViewModel.loadRequest(it)
+            responseViewModel.loadReports(it)
         } ?: println("No se obtuvo token")
     }
 
@@ -64,7 +70,11 @@ fun List(responseViewModel: ResponseViewModel) {
             modifier = Modifier.fillMaxWidth(0.95f)
         ) {
             items(reportList, key = { it.id }) { report ->
-                ReportCard(report)
+                ReportCard(report,
+                    onClick = {
+                        navController.navigate("reportDetail/${report.id}")
+                    }
+                )
             }
         }
     }
