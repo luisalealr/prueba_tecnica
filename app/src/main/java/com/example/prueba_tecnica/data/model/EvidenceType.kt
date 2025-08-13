@@ -2,6 +2,7 @@ package com.example.prueba_tecnica.data.model
 
 data class EvidenceType(
     val create_time: String,
+    val deleteTime: Any,
     val description: String,
     val id: Int,
     val key: String,

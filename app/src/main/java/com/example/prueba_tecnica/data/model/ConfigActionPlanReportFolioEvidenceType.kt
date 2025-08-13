@@ -3,6 +3,7 @@ package com.example.prueba_tecnica.data.model
 data class ConfigActionPlanReportFolioEvidenceType(
     val configActionPlanReportFolioId: Int,
     val createTime: String,
+    val deleteTime: Any,
     val description: String,
     val evidenceType: EvidenceType,
     val evidenceTypeId: Int,

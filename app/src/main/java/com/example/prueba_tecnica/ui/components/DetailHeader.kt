@@ -46,7 +46,7 @@ fun TopTogether(report: ResponseAPI?, navController: NavController) {
     ) {
         Column {
             DetailHeader(navController)
-            DetailReportContainer(report, navController)
+            DetailReportContainer(report, navController, "Ver más")
 
         }
     }
@@ -104,7 +104,11 @@ fun DetailHeader(navController: NavController) {
 
 
 @Composable
-fun DetailReportContainer(report: ResponseAPI?, navController: NavController) {
+fun DetailReportContainer(
+    report: ResponseAPI?,
+    navController: NavController,
+    text: String
+) {
     Box(
         modifier = Modifier
             .background(
@@ -129,7 +133,7 @@ fun DetailReportContainer(report: ResponseAPI?, navController: NavController) {
                 style = MaterialTheme.typography.labelMedium,
                 color = Color.White,
             )
-            ViewMore(report, navController)
+            ViewMore(report, navController, text)
         }
     }
 
@@ -137,7 +141,7 @@ fun DetailReportContainer(report: ResponseAPI?, navController: NavController) {
 }
 
 @Composable
-fun ViewMore(report: ResponseAPI?, navController: NavController) {
+fun ViewMore(report: ResponseAPI?, navController: NavController, text: String) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
@@ -153,10 +157,16 @@ fun ViewMore(report: ResponseAPI?, navController: NavController) {
         )
         Box(
             modifier = Modifier
-                .clickable{ navController.navigate("reportDetailTwo") },
+                .clickable {
+                    if (text == "Ver más") {
+                        navController.navigate("reportDetailTwo")
+                    } else {
+                        navController.popBackStack()
+                    }
+                },
         ) {
             Row {
-                Text("Ver más", color = Color.White)
+                Text(text, color = Color.White)
                 Icon(
                     imageVector = Icons.Filled.KeyboardDoubleArrowRight,
                     contentDescription = "Ver mas",
@@ -164,8 +174,6 @@ fun ViewMore(report: ResponseAPI?, navController: NavController) {
                 )
             }
         }
-
-
     }
 }
 

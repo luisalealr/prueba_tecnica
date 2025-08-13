@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.selection.selectable
@@ -44,6 +45,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.prueba_tecnica.data.model.OptionIcon
 import com.example.prueba_tecnica.data.model.ResponseAPI
+import com.example.prueba_tecnica.ui.components.DetailHeader
+import com.example.prueba_tecnica.ui.components.DetailReportContainer
 import com.example.prueba_tecnica.ui.components.TopTogether
 import com.example.prueba_tecnica.ui.formats.LabelValue
 import com.example.prueba_tecnica.ui.formats.SectionHeader
@@ -72,16 +75,20 @@ fun ReportDetailTwo(navController: NavController, responseViewModel: ResponseVie
                     CircularProgressIndicator()
                 }
             }
+
             else -> {
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
                         .navigationBarsPadding()
+                        .background(MaterialTheme.colorScheme.surface)
+                        .statusBarsPadding()
                 ) {
                     Column(
                         modifier = Modifier.verticalScroll(rememberScrollState())
                     ) {
-                        TopTogether(report, navController)
+                        DetailHeader(navController)
+                        DetailReportContainer(report, navController, "Ver menos")
                         DetailInfoTwo(report)
                     }
                 }
@@ -97,7 +104,7 @@ fun DetailInfoTwo(report: ResponseAPI?) {
             .background(Color.White)
             .fillMaxSize()
             .padding(22.dp)
-    ){
+    ) {
         Column {
             IconsRow()
             Spacer(modifier = Modifier.height(16.dp))
@@ -177,7 +184,7 @@ fun InfoTable(report: ResponseAPI?) {
                 textAlign = TextAlign.Center
             )
             DayHour("05/11/2024")
-            DayHour( "11:11 AM")
+            DayHour("11:11 AM")
         }
         Divider(
             modifier = Modifier
@@ -193,7 +200,7 @@ fun InfoTable(report: ResponseAPI?) {
             verticalArrangement = Arrangement.Center
         ) {
             report?.reportFolioUserAssign?.size?.let {
-                if(it > 0) {
+                if (it > 0) {
                     Text(
                         text = "Aprobado por ${report.reportFolioUserAssign[0].firstName} ${report.reportFolioUserAssign[0].lastName}",
                         style = MaterialTheme.typography.bodyLarge,
@@ -201,9 +208,13 @@ fun InfoTable(report: ResponseAPI?) {
                         textAlign = TextAlign.Center
                     )
                     DayHour("05/11/2024")
-                    DayHour( "11:11 AM")
-                }else{
-                    Text("No ha sido revisado")
+                    DayHour("11:11 AM")
+                } else {
+                    Text(
+                        text = "No ha sido revisado",
+                        style = MaterialTheme.typography.bodyMedium,
+                        color = MaterialTheme.colorScheme.surface
+                    )
                 }
             }
 
@@ -242,14 +253,17 @@ fun DayHour(text: String) {
 fun ContentInfo(report: ResponseAPI?) {
     Column {
         SectionHeader("Involucrados")
-        LabelValue("Jefe directo", report?.department?.userManage?.firstName + " " + report?.department?.userManage?.lastName)
+        LabelValue(
+            "Jefe directo",
+            report?.department?.userManage?.firstName + " " + report?.department?.userManage?.lastName
+        )
         Text(
             text = "Usuarios Asignados",
             style = MaterialTheme.typography.bodyMedium,
             color = MaterialTheme.colorScheme.surface
         )
         report?.reportFolioUserAssign?.size?.let {
-            if(it > 0) {
+            if (it > 0) {
                 Row {
                     report.reportFolioUserAssign.forEach { userAssign ->
                         Text(
@@ -261,7 +275,7 @@ fun ContentInfo(report: ResponseAPI?) {
                     }
                 }
 
-            }else{
+            } else {
                 Text(
                     text = "No hay usuarios asignados",
                     style = MaterialTheme.typography.bodyLarge,
@@ -292,22 +306,30 @@ fun ContentInfo(report: ResponseAPI?) {
 
         SectionHeader("Cuestionario")
 
-        if(report?.detailCreation != null){
+        if (report?.detailCreation != null) {
             LabelValue("Nombre", report.detailCreation.questionnaire)
             LabelValue("Pregunta", report.detailCreation.question)
             RadioButtom()
-        }else{
-            Text("No ha realizado el cuestionario")
+        } else {
+            Text(
+                text = "No ha realizado el cuestionario",
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.surface
+            )
         }
 
     }
 }
 
 @Composable
-fun RadioButtom(modifier: Modifier = Modifier){
+fun RadioButtom(modifier: Modifier = Modifier) {
     val radioOptions = listOf("1", "2", "3", "4", "5")
     val (selectedOption, onOptionSelected) = remember { mutableStateOf(radioOptions[0]) }
-    Row (modifier.selectableGroup().fillMaxWidth()){
+    Row(
+        modifier
+            .selectableGroup()
+            .fillMaxWidth()
+    ) {
         radioOptions.forEach { text ->
             Row(
                 Modifier

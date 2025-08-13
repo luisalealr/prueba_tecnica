@@ -1,6 +1,7 @@
 package com.example.prueba_tecnica.ui.activities
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,7 +10,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonColors
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -26,15 +29,18 @@ import androidx.compose.ui.unit.dp
 import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 import com.example.prueba_tecnica.ui.viewmodel.SigninViewModel
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 
 @Composable
 fun SigninScreen(viewModel: SigninViewModel, navigateToHome: () -> Unit) {
-    Prueba_tecnicaTheme {
+    Prueba_tecnicaTheme(dynamicColor = false) {
         Box(
             Modifier
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.primaryContainer)
-        ){
+        ) {
             Signin(viewModel, navigateToHome)
         }
     }
@@ -42,21 +48,25 @@ fun SigninScreen(viewModel: SigninViewModel, navigateToHome: () -> Unit) {
 
 
 @Composable
-fun Signin(viewModel : SigninViewModel, navigateToHome: () -> Unit) {
+fun Signin(viewModel: SigninViewModel, navigateToHome: () -> Unit) {
     val email: String by viewModel.email.observeAsState(initial = "")
     val password: String by viewModel.password.observeAsState(initial = "")
     val loginEnable: Boolean by viewModel.loginEnable.observeAsState(initial = false)
-    Box() {
-        Column(modifier = Modifier.fillMaxWidth()){
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(30.dp)
+    ) {
+        Column(modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Center) {
             Text(
                 text = "¡Hola!",
                 modifier = Modifier.align(Alignment.CenterHorizontally),
-                style = MaterialTheme.typography.displayLarge,
+                style = MaterialTheme.typography.labelMedium,
             )
             Spacer(modifier = Modifier.padding(16.dp))
             Text(
-                text = "Inicia sesión en tu cuenta",
-                style = MaterialTheme.typography.displaySmall
+                text = "Inicia sesión",
+                style = MaterialTheme.typography.labelMedium
             )
             Spacer(modifier = Modifier.padding(16.dp))
             CustomTextField(
@@ -65,7 +75,7 @@ fun Signin(viewModel : SigninViewModel, navigateToHome: () -> Unit) {
                 placeholderText = "Ingresa tu correo electrónico",
                 keyboardType = KeyboardType.Email
             )
-            Spacer(modifier = Modifier.padding(16.dp))
+            Spacer(modifier = Modifier.padding(10.dp))
             // Campo de Password
             CustomTextField(
                 value = password,
@@ -74,6 +84,7 @@ fun Signin(viewModel : SigninViewModel, navigateToHome: () -> Unit) {
                 keyboardType = KeyboardType.Password,
                 isPassword = true
             )
+            Spacer(modifier = Modifier.padding(16.dp))
             BotonIniciarSesion(
                 modifier = Modifier.align(Alignment.CenterHorizontally),
                 loginEnable,
@@ -124,20 +135,51 @@ fun BotonIniciarSesion(
     viewModel: SigninViewModel,
     navigateToHome: () -> Unit,
 ) {
+
+    var showErrorDialog by remember { mutableStateOf(false) }
+
     Box(modifier) {
         Button(
             onClick = {
-                viewModel.signInUser( email, password) { success ->
+                viewModel.signInUser(email, password) { success ->
                     if (success) {
                         navigateToHome()
                     } else {
+                        showErrorDialog = true
                     }
                 }
             },
             shape = RoundedCornerShape(5.dp),
-            enabled = loginEnable
+            enabled = loginEnable,
+            colors = ButtonColors(
+                containerColor = MaterialTheme.colorScheme.primary,
+                contentColor = Color.White,
+                disabledContainerColor = MaterialTheme.colorScheme.surface,
+                disabledContentColor = Color.White
+            )
         ) {
             Text("Iniciar Sesión")
+        }
+
+        if (showErrorDialog) {
+            AlertDialog(
+                onDismissRequest = { showErrorDialog = false },
+                title = { Text("Error") },
+                text = { Text("Usuario o contraseña incorrectos") },
+                confirmButton = {
+                    Button(
+                        onClick = { showErrorDialog = false },
+                        colors = ButtonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = Color.White,
+                            disabledContainerColor = MaterialTheme.colorScheme.surface,
+                            disabledContentColor = Color.White
+                        )
+                    ) {
+                        Text("Aceptar")
+                    }
+                }
+            )
         }
     }
 }

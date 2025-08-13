@@ -47,6 +47,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.prueba_tecnica.data.helper.TokenManager
+import com.example.prueba_tecnica.data.model.ConfigActionPlanReportFolioEvidenceType
 import com.example.prueba_tecnica.data.model.OptionItem
 import com.example.prueba_tecnica.data.model.ResponseAPI
 import com.example.prueba_tecnica.ui.components.DaysPassed
@@ -70,6 +71,7 @@ fun ReportDetail(reportId: Int, navController: NavController, responseViewModel:
     val report by responseViewModel.selectedReport
     val error by responseViewModel.errorMessage
 
+
     Prueba_tecnicaTheme(dynamicColor = false) {
         when {
             error.isNotEmpty() -> {
@@ -84,6 +86,9 @@ fun ReportDetail(reportId: Int, navController: NavController, responseViewModel:
                 }
             }
             else -> {
+                val comentarios = report?.configReportFolio?.configActionPlanReportFolioEvidenceTypes
+                    ?.filter { it.evidenceType.key == "comment" || it.evidenceType.key == "comment_approve" }
+                    ?: emptyList()
                 Box(
                     modifier = Modifier
                         .fillMaxSize()
@@ -94,7 +99,7 @@ fun ReportDetail(reportId: Int, navController: NavController, responseViewModel:
                     ) {
                         TopTogether(report, navController)
                         DaysPassed(report)
-                        DetailInfo(report)
+                        DetailInfo(report, comentarios)
                     }
                 }
             }
@@ -103,12 +108,12 @@ fun ReportDetail(reportId: Int, navController: NavController, responseViewModel:
 }
 
 @Composable
-fun DetailInfo(report: ResponseAPI?) {
+fun DetailInfo(report: ResponseAPI?, comentarios: List<ConfigActionPlanReportFolioEvidenceType>?) {
     val optionList = listOf(
         OptionItem("Evidencias", 0, Icons.Filled.AttachFile),
         OptionItem("Opciones Avanzadas", 0, Icons.AutoMirrored.Filled.ArrowForward),
         OptionItem("Informe de Folio", 0, Icons.Outlined.RemoveRedEye),
-        OptionItem("Comentarios", 1, Icons.AutoMirrored.Filled.ArrowForward)
+        OptionItem("Comentarios", comentarios?.size ?: 0, Icons.AutoMirrored.Filled.ArrowForward)
     )
 
     Prueba_tecnicaTheme(dynamicColor = false) {

@@ -1,8 +1,8 @@
 package com.example.prueba_tecnica.data.model
 
 data class ConfigReportFolioReject(
-    val evidenceType: EvidenceTypeX,
+    val evidenceType: EvidenceType,
     val evidenceTypeId: Int,
-    val paramsConfiguration: ParamsConfigurationX,
+    val paramsConfiguration: ParamsConfiguration,
     val required: Boolean
 )
