@@ -26,7 +26,7 @@ data class ResponseAPI(
     val department: Department,
     val departmentId: Int,
     val description: String,
-    val detailCreation: Any,
+    val detailCreation: DetailCreation?,
     val evidences: List<Evidence>?,
     val existAnyQuote: Boolean?,
     val existSolutionCaseMgDpto: Boolean?,

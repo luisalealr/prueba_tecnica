@@ -1,6 +1,7 @@
 package com.example.prueba_tecnica.ui.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -19,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -45,8 +46,8 @@ fun TopTogether(report: ResponseAPI?, navController: NavController) {
     ) {
         Column {
             DetailHeader(navController)
-            DetailReportContainer(report)
-            DaysPassed(report)
+            DetailReportContainer(report, navController)
+
         }
     }
 }
@@ -103,7 +104,7 @@ fun DetailHeader(navController: NavController) {
 
 
 @Composable
-fun DetailReportContainer(report: ResponseAPI?) {
+fun DetailReportContainer(report: ResponseAPI?, navController: NavController) {
     Box(
         modifier = Modifier
             .background(
@@ -128,7 +129,7 @@ fun DetailReportContainer(report: ResponseAPI?) {
                 style = MaterialTheme.typography.labelMedium,
                 color = Color.White,
             )
-            ViewMore(report?.type  ?: "")
+            ViewMore(report, navController)
         }
     }
 
@@ -136,13 +137,13 @@ fun DetailReportContainer(report: ResponseAPI?) {
 }
 
 @Composable
-fun ViewMore(type: String) {
+fun ViewMore(report: ResponseAPI?, navController: NavController) {
     Row(
         modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = type,
+            text = report?.type ?: "",
             style = MaterialTheme.typography.titleSmall,
             modifier = Modifier
                 .clip(RoundedCornerShape(15.dp))
@@ -150,14 +151,21 @@ fun ViewMore(type: String) {
                 .padding(horizontal = 15.dp, vertical = 8.dp),
             color = Color.White
         )
-        Row {
-            Text("Ver más", color = Color.White)
-            Icon(
-                imageVector = Icons.Filled.KeyboardDoubleArrowRight,
-                contentDescription = "Ver mas",
-                tint = Color.White
-            )
+        Box(
+            modifier = Modifier
+                .clickable{ navController.navigate("reportDetailTwo") },
+        ) {
+            Row {
+                Text("Ver más", color = Color.White)
+                Icon(
+                    imageVector = Icons.Filled.KeyboardDoubleArrowRight,
+                    contentDescription = "Ver mas",
+                    tint = Color.White
+                )
+            }
         }
+
+
     }
 }
 

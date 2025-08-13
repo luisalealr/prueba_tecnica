@@ -1,5 +1,6 @@
 package com.example.prueba_tecnica.ui.viewmodel
 
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -13,7 +14,9 @@ class ResponseViewModel(private val api: WebService): ViewModel() {
 
     val errorMessage = mutableStateOf("")
 
-    val selectedReport = mutableStateOf<ResponseAPI?>(null)
+
+    private val _selectedReport = mutableStateOf<ResponseAPI?>(null)
+    val selectedReport: State<ResponseAPI?> = _selectedReport
 
     fun loadReports(token: String) {
         viewModelScope.launch {
@@ -36,7 +39,7 @@ class ResponseViewModel(private val api: WebService): ViewModel() {
             try {
                 val response = api.getReportById(id, "Bearer $token")
                 if (response.isSuccessful) {
-                    selectedReport.value = response.body()
+                    _selectedReport.value = response.body()
                     errorMessage.value = ""
                 } else {
                     errorMessage.value = "Error al cargar la petición: ${response.code()}"
@@ -46,4 +49,6 @@ class ResponseViewModel(private val api: WebService): ViewModel() {
             }
         }
     }
+
+
 }

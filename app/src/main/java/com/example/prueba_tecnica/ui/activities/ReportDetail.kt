@@ -45,22 +45,17 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.prueba_tecnica.data.helper.TokenManager
 import com.example.prueba_tecnica.data.model.OptionItem
 import com.example.prueba_tecnica.data.model.ResponseAPI
-import com.example.prueba_tecnica.data.network.RetrofitClient
+import com.example.prueba_tecnica.ui.components.DaysPassed
 import com.example.prueba_tecnica.ui.components.TopTogether
 import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 import com.example.prueba_tecnica.ui.viewmodel.ResponseViewModel
-import com.example.prueba_tecnica.ui.viewmodel.ResponseViewModelFactory
 
 @Composable
-fun ReportDetail(reportId: Int, navController: NavController) {
-    val apiService = RetrofitClient.webService
-    val factory = ResponseViewModelFactory(apiService)
-    val responseViewModel: ResponseViewModel = viewModel(factory = factory)
+fun ReportDetail(reportId: Int, navController: NavController, responseViewModel: ResponseViewModel) {
 
     val context = LocalContext.current
     var token by remember { mutableStateOf<String?>(null) }
@@ -80,7 +75,6 @@ fun ReportDetail(reportId: Int, navController: NavController) {
             error.isNotEmpty() -> {
                 Text("Error: $error", color = Color.Red)
             }
-
             report == null -> {
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -89,7 +83,6 @@ fun ReportDetail(reportId: Int, navController: NavController) {
                     CircularProgressIndicator()
                 }
             }
-
             else -> {
                 Box(
                     modifier = Modifier
@@ -100,6 +93,7 @@ fun ReportDetail(reportId: Int, navController: NavController) {
                         modifier = Modifier.verticalScroll(rememberScrollState())
                     ) {
                         TopTogether(report, navController)
+                        DaysPassed(report)
                         DetailInfo(report)
                     }
                 }

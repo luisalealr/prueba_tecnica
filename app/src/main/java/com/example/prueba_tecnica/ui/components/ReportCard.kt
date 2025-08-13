@@ -28,12 +28,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.example.prueba_tecnica.data.model.ResponseAPI
+import com.example.prueba_tecnica.ui.formats.DescriptionLabel
+import com.example.prueba_tecnica.ui.formats.TitleLabel
 import com.example.prueba_tecnica.ui.formats.formatFecha
 import com.example.prueba_tecnica.ui.theme.Prueba_tecnicaTheme
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun ReportCard(report: ResponseAPI, onClick: () -> Unit) {
+
+    val providerFirstName = report.reportFolioUserAssign
+        ?.firstOrNull()
+        ?.firstName
+        ?: "Sin asignar"
+
+    val providerLastName = report.reportFolioUserAssign
+        ?.firstOrNull()
+        ?.lastName
+        ?: ""
+
     Prueba_tecnicaTheme(dynamicColor = false) {
         Box(
             modifier = Modifier
@@ -70,11 +83,14 @@ fun ReportCard(report: ResponseAPI, onClick: () -> Unit) {
                         )
                     }
                     AreaInfo(report.area.name, report.department.name, report.store.id)
+
                     PeopleInfo(
                         report.createdByUser.firstName,
                         report.createdByUser.lastName,
                         report.attendingByUser?.firstName,
-                        report.attendingByUser?.lastName
+                        report.attendingByUser?.lastName,
+                        providerFirstName,
+                        providerLastName
                     )
                     DetailButton(onClick)
                 }
@@ -86,7 +102,7 @@ fun ReportCard(report: ResponseAPI, onClick: () -> Unit) {
 @Composable
 fun DetailButton(onClick: () -> Unit) {
     Button(
-        onClick = {onClick()}, modifier = Modifier
+        onClick = { onClick() }, modifier = Modifier
             .fillMaxWidth()
             .height(50.dp),
         shape = RoundedCornerShape(12.dp)
@@ -158,42 +174,16 @@ fun AreaInfo(area: String, department: String, unity: Int) {
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row {
-            Text(
-                text = "Área: ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = area,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
+            TitleLabel("Área")
+            DescriptionLabel(area)
         }
         Row {
-            Text(
-                text = "Departamento: ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = department,
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
+            TitleLabel("Departamento")
+            DescriptionLabel(department)
         }
         Row {
-            Text(
-                text = "Unidad: ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = "$unity",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
+            TitleLabel("Unidad")
+            DescriptionLabel("$unity")
         }
     }
 }
@@ -203,63 +193,41 @@ fun PeopleInfo(
     creatorFirstName: String,
     creatorLastName: String,
     solverFirstName: String?,
-    solverLastName: String?
+    solverLastName: String?,
+    providerFirstName: String?,
+    providerLastName: String?
 ) {
     Column(
         modifier = Modifier.height(70.dp),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
         Row {
-            Text(
-                text = "Creador: ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = "$creatorFirstName $creatorLastName",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            TitleLabel("Creador")
+            DescriptionLabel("$creatorFirstName $creatorLastName")
         }
         Row {
-            Text(
-                text = "Proveedor: ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = "Proveedor ABC",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
+            TitleLabel("Proveedor")
+            if (providerFirstName.isNullOrBlank() && providerLastName.isNullOrBlank()) {
+                DescriptionLabel("No Asignado")
+            } else {
+                DescriptionLabel("$providerFirstName $providerLastName")
+            }
         }
         Row {
-            Text(
-                text = "Solucionador: ",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Text(
-                text = if (solverFirstName.isNullOrBlank() && solverLastName.isNullOrBlank()) {
-                    "No Asignado"
-                } else {
-                    "${solverFirstName ?: ""} ${solverLastName ?: ""}".trim()
-                },
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis,
-            )
+            TitleLabel("Solucionador")
+            if (solverFirstName.isNullOrBlank() && solverLastName.isNullOrBlank()) {
+                DescriptionLabel("No Asignado")
+            } else {
+                DescriptionLabel("$solverFirstName $solverLastName")
+            }
         }
     }
 }
 
+
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun TitleInfo(name: String, createdAt: String, priority: String, status: String) {
-
     val date = formatFecha(createdAt)
     Text(
         text = name,
@@ -272,17 +240,7 @@ fun TitleInfo(name: String, createdAt: String, priority: String, status: String)
     Categories(priority, status)
     Spacer(modifier = Modifier.size(10.dp))
     Row {
-        Text(
-            text = "Solicitado el: ",
-            style = MaterialTheme.typography.bodyMedium,
-            color = Color.Gray
-        )
-        Text(
-            text = date,
-            style = MaterialTheme.typography.bodySmall,
-            color = Color.Gray,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-        )
+        TitleLabel("Solicitada el")
+        DescriptionLabel(date)
     }
 }
